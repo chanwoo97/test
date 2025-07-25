@@ -3,7 +3,6 @@ package com.busanit501.shoppingweb_project.domain;
 import com.busanit501.shoppingweb_project.domain.enums.ProductCategory;
 import jakarta.persistence.*;
 import lombok.*;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +38,7 @@ public class Product {
     public void addStock(int quantity) {
         this.stock += quantity;
     }
+
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<CartItem> cartItems = new ArrayList<>();
@@ -51,16 +51,21 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Review> reviews = new ArrayList<>();
 
-
     public void addReview(Review review) {
         this.reviews.add(review);
         review.setProduct(this);
     }
 
-
     public void removeReview(Review review) {
         this.reviews.remove(review);
         review.setProduct(null);
+    }
+
+    public void changeTitleContent(String name, BigDecimal price, int stock, ProductCategory tag) {
+        this.productName = name;
+        this.price = price;
+        this.stock = stock;
+        this.productTag = tag;
     }
 }
 

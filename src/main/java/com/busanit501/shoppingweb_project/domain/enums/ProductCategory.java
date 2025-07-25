@@ -10,6 +10,7 @@ public enum ProductCategory {
     BAG("가방"),
     ACC("액세서리"),
     UNKNOWN("기타/알 수 없음");
+
     private final String koreanName;
 
     ProductCategory(String koreanName) {
@@ -19,7 +20,6 @@ public enum ProductCategory {
     public String getKoreanName() {
         return koreanName;
     }
-
 
     public static ProductCategory fromKoreanName(String koreanName) {
         for (ProductCategory category : ProductCategory.values()) {
