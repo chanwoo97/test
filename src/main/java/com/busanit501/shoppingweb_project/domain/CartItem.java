@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class CartItem {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long CartItemId;
+    private Long cartItemId;
 
     // 회원 ID (연관관계 매핑도 가능하지만, 단순 Long으로 두는 경우 많음)
     @Column(name = "member_id", nullable = false)
@@ -37,5 +37,12 @@ public class CartItem {
         if (!product.getCartItems().contains(this)) {
             product.getCartItems().add(this);
         }
+    }
+    public void changeQuantity(int newQuantity) {
+        this.quantity = newQuantity;
+    }
+
+    public void increaseQuantity(int amount) {
+        this.quantity += amount;
     }
 }

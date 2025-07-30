@@ -1,51 +1,56 @@
 package com.busanit501.shoppingweb_project.service;
 
 import com.busanit501.shoppingweb_project.domain.Product;
+import com.busanit501.shoppingweb_project.dto.ProductDTO;
 import com.busanit501.shoppingweb_project.repository.ProductRepository;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
-public class ProductService {
+public interface ProductService {
+    // 단건 조회
+    ProductDTO getProductById(Long productId);
 
-    // DB와 연동하는 JPA Repository 주입
-    private final ProductRepository productRepository;
+    // 전체 목록 조회
+    List<ProductDTO> getAllProducts();
 
-    // 상품 저장 (DB에 INSERT)
-    public void saveProduct(Product product) {
-        productRepository.save(product); // JPA save 메서드를 통해 DB에 저장
+    // 카테고리별 조회
+    List<ProductDTO> getProductsByCategory(String category);
+
+    // 키워드 검색
+    List<ProductDTO> searchProducts(String keyword);
+
+    void saveProduct(Product product);
+    default Product dtoToEntity(ProductDTO productDTO){
+        Product product = Product.builder()
+                .productId(productDTO.getProductId())
+                .productName(productDTO.getProductName())
+                .price(productDTO.getPrice())
+                .stock(productDTO.getStock())
+                .image(productDTO.getImage())
+                .productTag(productDTO.getProductTag())
+                .build();
+        return product;
+    }
+    default ProductDTO entityToDto(Product product){
+        ProductDTO productDTO = ProductDTO.builder()
+                .productId(product.getProductId())
+                .productName(product.getProductName())
+                .price(product.getPrice())
+                .stock(product.getStock())
+                .image(product.getImage())
+                .productTag(product.getProductTag())
+                .build();
+        return productDTO;
     }
 
-    // 전체 상품 조회 (SELECT * FROM product)
-    public List<Product> findAllProducts() {
-        return productRepository.findAll(); // 모든 상품 리스트를 DB에서 가져옴
-    }
+    // 새 상품 등록 메서드 시그니처 추가
+    ProductDTO createProduct(ProductDTO productDTO);
 
-    // 상품 ID로 조회 (SELECT * FROM product WHERE id = ?)
-    public Product findProductById(Long id) {
-        return productRepository.findById(id).orElse(null); // 해당 ID가 없으면 null 반환
-    }
+    // 상품 수정 메서드 시그니처 추가
+    ProductDTO updateProduct(Long productId, ProductDTO productDTO);
 
-    // 상품 정보 수정
-    public void updateProduct(Long id, Product updatedProduct) {
-        // 기존 상품을 DB에서 찾기
-        Product existingProduct = productRepository.findById(id).orElse(null);
-        if (existingProduct != null) {
-            // 기존 상품의 필드 값을 새 값으로 업데이트
-            existingProduct.setProductName(updatedProduct.getProductName());
-            existingProduct.setPrice(updatedProduct.getPrice());
-            existingProduct.setStock(updatedProduct.getStock());
-            existingProduct.setProductTag(updatedProduct.getProductTag());
-
-            // 변경된 내용을 다시 DB에 저장 (UPDATE)
-            productRepository.save(existingProduct);
-        }
-    }
-
-    // 상품 삭제 (DELETE FROM product WHERE id = ?)
-    public void deleteProduct(Long id) {
-        productRepository.deleteById(id); // ID 기준으로 상품 삭제
-    }
+    // 상품 삭제 메서드 시그니처 추가
+    void deleteProduct(Long productId);
 }
